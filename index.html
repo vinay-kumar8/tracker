@@ -6,57 +6,53 @@
 <meta name="theme-color" content="#0a0a0a">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap">
 <style>
-  /* full-screen mobile calendar — dark, dots fill the screen */
   :root {
     --bg: #0a0a0a;
-    --surface: #1a1a1a;
-    --border: #252525;
+    --surface: #1c1c1c;
+    --border: #2a2a2a;
     --fg: #ffffff;
-    --fg-muted: #444;
-    --fg-mid: #777;
+    --fg-muted: #3a3a3a;
+    --fg-dim: #666;
     --red: #e63030;
-    --red-glow: rgba(230,48,48,0.28);
-    --today-ring: rgba(255,255,255,0.4);
+    --red-glow: rgba(230,48,48,0.3);
     color-scheme: dark;
     font-family: 'Outfit', system-ui, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+
+  html {
+    height: 100%;
+    height: -webkit-fill-available;
+  }
   body {
+    margin: 0;
     background: var(--bg);
     color: var(--fg);
+    height: 100%;
+    min-height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-left: max(20px, env(safe-area-inset-left, 0px));
-    padding-right: max(20px, env(safe-area-inset-right, 0px));
-    padding-block: 0;
+    padding-left: max(18px, env(safe-area-inset-left, 0px));
+    padding-right: max(18px, env(safe-area-inset-right, 0px));
+    padding-top: max(18px, env(safe-area-inset-top, 0px));
+    padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
   }
 
-  .wrap {
-    width: 100%;
-    max-width: 430px;
-    display: flex;
-    flex-direction: column;
-    padding-top: max(28px, env(safe-area-inset-top, 0px));
-    padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
-  }
-
-  /* month nav */
+  /* month nav — fixed height */
   .top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
+    flex-shrink: 0;
+    margin-bottom: 14px;
   }
   .nav-btn {
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--fg);
-    width: 46px; height: 46px;
+    width: 42px; height: 42px;
     border-radius: 50%;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     -webkit-tap-highlight-color: transparent;
@@ -65,38 +61,41 @@
   .nav-btn:active { background: #2a2a2a; }
   .month-label { text-align: center; flex: 1; }
   .month-name {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1;
   }
   .month-year {
-    font-size: 0.72rem;
-    color: var(--fg-muted);
+    font-size: 0.68rem;
+    color: var(--fg-dim);
     font-weight: 600;
-    margin-top: 3px;
+    margin-top: 2px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  /* progress */
-  .progress-wrap { margin-bottom: 22px; }
+  /* progress — fixed height */
+  .progress-wrap {
+    flex-shrink: 0;
+    margin-bottom: 14px;
+  }
   .progress-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 9px;
+    margin-bottom: 7px;
   }
   .progress-pct {
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--red);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .progress-sub {
-    font-size: 0.78rem;
-    color: var(--fg-muted);
+    font-size: 0.72rem;
+    color: var(--fg-dim);
     font-weight: 600;
   }
   .bar-bg {
@@ -113,94 +112,95 @@
     box-shadow: 0 0 8px var(--red-glow);
   }
 
-  /* weekday row */
+  /* weekdays — fixed height */
   .weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 5px;
+    flex-shrink: 0;
+    margin-bottom: 5px;
   }
   .wd {
     text-align: center;
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--fg-muted);
-    padding: 3px 0;
+    color: var(--fg-dim);
+    padding: 2px 0;
   }
 
-  /* dots grid */
+  /* grid — grows to fill remaining space */
   .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 18px;
+    gap: 5px;
+    flex: 1;
+    align-content: stretch;
   }
   .day {
-    aspect-ratio: 1;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 0;
   }
   .day .num {
-    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+    font-size: clamp(0.75rem, 4vw, 1rem);
     font-weight: 700;
     line-height: 1;
   }
   .day.empty { background: none; }
   .day.done {
     background: var(--red);
-    box-shadow: 0 0 14px var(--red-glow);
+    box-shadow: 0 0 12px var(--red-glow);
   }
   .day.done .num { color: #fff; }
-  .day.today-day { border: 2px solid var(--today-ring); }
+  .day.today-day { border: 2px solid rgba(255,255,255,0.35); }
   .day.today-day .num { color: var(--fg); }
   .day.future-day { background: var(--surface); }
   .day.future-day .num { color: var(--fg-muted); }
 
   .note {
+    flex-shrink: 0;
     text-align: center;
-    font-size: 0.78rem;
-    color: var(--fg-muted);
+    font-size: 0.72rem;
+    color: var(--fg-dim);
     font-weight: 600;
+    margin-top: 10px;
   }
-  .note strong { color: var(--fg-mid); }
+  .note strong { color: #888; }
 </style>
 
-<div class="wrap">
-  <div class="top">
-    <button class="nav-btn" id="prev" aria-label="Previous">‹</button>
-    <div class="month-label">
-      <div class="month-name" id="month-name"></div>
-      <div class="month-year" id="month-year"></div>
-    </div>
-    <button class="nav-btn" id="next" aria-label="Next">›</button>
+<div class="top">
+  <button class="nav-btn" id="prev">‹</button>
+  <div class="month-label">
+    <div class="month-name" id="month-name"></div>
+    <div class="month-year" id="month-year"></div>
   </div>
-
-  <div class="progress-wrap">
-    <div class="progress-row">
-      <div class="progress-pct" id="pct">0%</div>
-      <div class="progress-sub" id="prog-sub"></div>
-    </div>
-    <div class="bar-bg"><div class="bar-fill" id="bar" style="width:0%"></div></div>
-  </div>
-
-  <div class="weekdays">
-    <div class="wd">Su</div><div class="wd">Mo</div><div class="wd">Tu</div>
-    <div class="wd">We</div><div class="wd">Th</div><div class="wd">Fr</div>
-    <div class="wd">Sa</div>
-  </div>
-
-  <div class="grid" id="grid"></div>
-  <div class="note" id="note"></div>
+  <button class="nav-btn" id="next">›</button>
 </div>
+
+<div class="progress-wrap">
+  <div class="progress-row">
+    <div class="progress-pct" id="pct">0%</div>
+    <div class="progress-sub" id="prog-sub"></div>
+  </div>
+  <div class="bar-bg"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+</div>
+
+<div class="weekdays">
+  <div class="wd">Su</div><div class="wd">Mo</div><div class="wd">Tu</div>
+  <div class="wd">We</div><div class="wd">Th</div><div class="wd">Fr</div>
+  <div class="wd">Sa</div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="note" id="note"></div>
 
 <script>
   const MONTHS = ['January','February','March','April','May','June',
                   'July','August','September','October','November','December'];
-
   const now = new Date();
   let viewYear = now.getFullYear();
   let viewMonth = now.getMonth();
