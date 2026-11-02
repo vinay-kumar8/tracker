@@ -6,137 +6,136 @@
 <meta name="theme-color" content="#0a0a0a">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap">
 <style>
+  /* full-screen mobile calendar — dark, dots fill the screen */
   :root {
     --bg: #0a0a0a;
-    --surface: #141414;
-    --border: #222;
+    --surface: #1a1a1a;
+    --border: #252525;
     --fg: #ffffff;
-    --fg-muted: #555;
-    --fg-mid: #888;
+    --fg-muted: #444;
+    --fg-mid: #777;
     --red: #e63030;
-    --red-glow: rgba(230,48,48,0.3);
-    --today-ring: rgba(255,255,255,0.35);
+    --red-glow: rgba(230,48,48,0.28);
+    --today-ring: rgba(255,255,255,0.4);
     color-scheme: dark;
     font-family: 'Outfit', system-ui, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
   body {
-    margin: 0;
     background: var(--bg);
     color: var(--fg);
-    min-height: 100%;
-    padding-left: max(24px, env(safe-area-inset-left, 0px));
-    padding-right: max(24px, env(safe-area-inset-right, 0px));
-    padding-block: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  .wrap {
-    width: 100%;
-    max-width: 390px;
-    padding-bottom: 50px;
+    justify-content: center;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
   }
 
-  /* header */
+  .wrap {
+    width: 100%;
+    max-width: 430px;
+    display: flex;
+    flex-direction: column;
+    padding-top: max(28px, env(safe-area-inset-top, 0px));
+    padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+  }
+
+  /* month nav */
   .top {
-    padding-top: max(56px, env(safe-area-inset-top, 0px));
-    padding-bottom: 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 22px;
   }
   .nav-btn {
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--fg);
-    width: 38px; height: 38px;
+    width: 46px; height: 46px;
     border-radius: 50%;
-    font-size: 1rem;
+    font-size: 1.3rem;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     -webkit-tap-highlight-color: transparent;
-    transition: background 0.1s;
     flex-shrink: 0;
   }
-  .nav-btn:active { background: #222; }
-  .month-label {
-    text-align: center;
-    flex: 1;
-  }
+  .nav-btn:active { background: #2a2a2a; }
+  .month-label { text-align: center; flex: 1; }
   .month-name {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: 800;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     line-height: 1;
   }
   .month-year {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--fg-muted);
     font-weight: 600;
     margin-top: 3px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  /* progress bar */
-  .progress-wrap {
-    margin-bottom: 28px;
-  }
+  /* progress */
+  .progress-wrap { margin-bottom: 22px; }
   .progress-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
   }
   .progress-pct {
-    font-size: 2rem;
+    font-size: 2.4rem;
     font-weight: 800;
     color: var(--red);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
   .progress-sub {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--fg-muted);
     font-weight: 600;
   }
   .bar-bg {
-    height: 4px;
+    height: 3px;
     background: var(--surface);
-    border-radius: 4px;
+    border-radius: 3px;
     overflow: hidden;
   }
   .bar-fill {
     height: 100%;
     background: var(--red);
-    border-radius: 4px;
-    transition: width 0.4s ease;
+    border-radius: 3px;
+    transition: width 0.5s ease;
     box-shadow: 0 0 8px var(--red-glow);
   }
 
-  /* weekday headers */
+  /* weekday row */
   .weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .wd {
     text-align: center;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--fg-muted);
-    padding: 4px 0;
+    padding: 3px 0;
   }
 
-  /* calendar grid */
+  /* dots grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
-    margin-bottom: 32px;
+    margin-bottom: 18px;
   }
   .day {
     aspect-ratio: 1;
@@ -144,54 +143,40 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
   }
   .day .num {
-    font-size: 0.8rem;
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
     font-weight: 700;
     line-height: 1;
   }
-  /* empty cell for offset */
   .day.empty { background: none; }
-
-  /* past = red */
   .day.done {
     background: var(--red);
-    box-shadow: 0 0 10px var(--red-glow);
+    box-shadow: 0 0 14px var(--red-glow);
   }
   .day.done .num { color: #fff; }
-
-  /* today = white ring */
-  .day.today-day {
-    border: 2px solid var(--today-ring);
-  }
+  .day.today-day { border: 2px solid var(--today-ring); }
   .day.today-day .num { color: var(--fg); }
-
-  /* future = dim dot */
-  .day.future-day {
-    background: var(--surface);
-  }
+  .day.future-day { background: var(--surface); }
   .day.future-day .num { color: var(--fg-muted); }
 
-  /* bottom note */
   .note {
     text-align: center;
     font-size: 0.78rem;
     color: var(--fg-muted);
     font-weight: 600;
-    line-height: 1.6;
   }
   .note strong { color: var(--fg-mid); }
 </style>
 
 <div class="wrap">
   <div class="top">
-    <button class="nav-btn" id="prev" aria-label="Previous month">‹</button>
+    <button class="nav-btn" id="prev" aria-label="Previous">‹</button>
     <div class="month-label">
       <div class="month-name" id="month-name"></div>
       <div class="month-year" id="month-year"></div>
     </div>
-    <button class="nav-btn" id="next" aria-label="Next month">›</button>
+    <button class="nav-btn" id="next" aria-label="Next">›</button>
   </div>
 
   <div class="progress-wrap">
@@ -209,7 +194,6 @@
   </div>
 
   <div class="grid" id="grid"></div>
-
   <div class="note" id="note"></div>
 </div>
 
@@ -221,91 +205,72 @@
   let viewYear = now.getFullYear();
   let viewMonth = now.getMonth();
 
-  function daysInMonth(y, m) {
-    return new Date(y, m + 1, 0).getDate();
-  }
+  function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
 
   function render() {
     const today = new Date();
-    const isCurrentMonth = (viewYear === today.getFullYear() && viewMonth === today.getMonth());
+    const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth();
     const todayDate = today.getDate();
     const total = daysInMonth(viewYear, viewMonth);
-    const firstDow = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
+    const firstDow = new Date(viewYear, viewMonth, 1).getDay();
 
-    // header
     document.getElementById('month-name').textContent = MONTHS[viewMonth];
     document.getElementById('month-year').textContent = viewYear;
 
-    // how many days are "done" (fully past)
     let doneDays = 0;
-    if (viewYear < today.getFullYear()) {
-      doneDays = total; // whole month is past
-    } else if (viewYear === today.getFullYear() && viewMonth < today.getMonth()) {
-      doneDays = total; // whole month is past
+    if (viewYear < today.getFullYear() || (viewYear === today.getFullYear() && viewMonth < today.getMonth())) {
+      doneDays = total;
     } else if (isCurrentMonth) {
-      doneDays = todayDate - 1; // only fully completed days
-    } else {
-      doneDays = 0; // future month
+      doneDays = todayDate - 1;
     }
 
     const pct = total > 0 ? Math.round((doneDays / total) * 100) : 0;
     document.getElementById('pct').textContent = pct + '%';
     document.getElementById('bar').style.width = pct + '%';
-    document.getElementById('prog-sub').textContent = `${doneDays} of ${total} days`;
+    document.getElementById('prog-sub').textContent = doneDays + ' of ' + total + ' days';
 
-    // grid
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
 
-    // empty offset cells
     for (let i = 0; i < firstDow; i++) {
-      const empty = document.createElement('div');
-      empty.className = 'day empty';
-      grid.appendChild(empty);
+      const e = document.createElement('div');
+      e.className = 'day empty';
+      grid.appendChild(e);
     }
 
     for (let d = 1; d <= total; d++) {
       const el = document.createElement('div');
       el.className = 'day';
-      el.innerHTML = `<span class="num">${d}</span>`;
+      el.innerHTML = '<span class="num">' + d + '</span>';
 
-      const isPast = (viewYear < today.getFullYear()) ||
-                     (viewYear === today.getFullYear() && viewMonth < today.getMonth()) ||
-                     (isCurrentMonth && d < todayDate);
+      const isPast = viewYear < today.getFullYear() ||
+        (viewYear === today.getFullYear() && viewMonth < today.getMonth()) ||
+        (isCurrentMonth && d < todayDate);
       const isToday = isCurrentMonth && d === todayDate;
 
-      if (isPast) {
-        el.classList.add('done');
-      } else if (isToday) {
-        el.classList.add('today-day');
-      } else {
-        el.classList.add('future-day');
-      }
+      if (isPast) el.classList.add('done');
+      else if (isToday) el.classList.add('today-day');
+      else el.classList.add('future-day');
 
       grid.appendChild(el);
     }
 
-    // bottom note
     const note = document.getElementById('note');
     if (isCurrentMonth) {
       const left = total - todayDate;
-      note.innerHTML = `<strong>${left} days</strong> remaining this month`;
+      note.innerHTML = '<strong>' + left + ' days</strong> remaining';
     } else if (doneDays === total) {
-      note.innerHTML = `Month complete`;
+      note.innerHTML = 'Month complete';
     } else {
-      note.innerHTML = ``;
+      note.innerHTML = '';
     }
   }
 
   document.getElementById('prev').addEventListener('click', () => {
-    viewMonth--;
-    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-    render();
+    viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } render();
   });
   document.getElementById('next').addEventListener('click', () => {
-    viewMonth++;
-    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-    render();
+    viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } render();
   });
 
   render();
